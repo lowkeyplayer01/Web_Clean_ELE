@@ -7,8 +7,8 @@ from django.contrib import messages
 from django.http import Http404
 import difflib
 
-from .models import Dish, DishRestaurant, Restaurant, Wishlist, Review, Feedback
-from .forms import ReviewForm, FeedbackForm, SignUpForm, WishlistForm
+from .models import Dish, DishRestaurant, Restaurant, Wishlist, Review, Feedback, Category
+from .forms import ReviewForm, FeedbackForm, SignUpForm, WishlistForm,DishRestaurantSuggestionForm
 
 #Basic Landing page
 def landing(request):
@@ -16,48 +16,54 @@ def landing(request):
 
 # home page for Top 5 according to review counts
 def home(request):
-    trending = (
-        DishRestaurant.objects
-        .annotate(review_count=Count("reviews"))
-        .order_by("-review_count")[:5]
-    )
+    trending = (DishRestaurant.objects.annotate(review_count=Count("reviews")).order_by("-review_count")[:5])
     return render(request, "myapp/home.html", {"trending": trending})
 
 
-#Display Search Results
+#Display Search Results along
 def search_results(request):
     query = request.GET.get("q", "").strip()
+    category_id = request.GET.get("category", "").strip()
+
     if not query:
         return render(request, "myapp/search_results.html", {
             "not_found": True,
             "query": query,
             "hints": [],
+            "category_choices": Category.objects.all(),
+            "selected_category": None,
         })
-
-    # First try exact match on dish name
+    
     dishes = Dish.objects.filter(name__iexact=query)
     if not dishes.exists():
-        # Then try case-insensitive containment
         dishes = Dish.objects.filter(name__icontains=query)
     if not dishes.exists():
-        # No matches—offer spelling suggestions and use difflib
         all_names = list(Dish.objects.values_list("name", flat=True))
         hints = difflib.get_close_matches(query, all_names, n=3, cutoff=0.6)
         return render(request, "myapp/search_results.html", {
             "not_found": True,
             "query": query,
             "hints": hints,
+            "category_choices": Category.objects.all(),
+            "selected_category": None,
         })
-
+    
     dish = dishes.first()
+
     combos = DishRestaurant.objects.filter(dish=dish)
 
-    # If logged in, gather dish IDs already in the user’s wishlist
+    if category_id:
+        try:
+            category = Category.objects.get(id=category_id)
+            combos = combos.filter(dish__categories=category)
+            selected_category = category
+        except Category.DoesNotExist:
+            selected_category = None
+    else:
+        selected_category = None
+
     if request.user.is_authenticated:
-        wishlist_ids = list(
-            Wishlist.objects.filter(user=request.user)
-                            .values_list("dish_id", flat=True)
-        )
+        wishlist_ids = list(Wishlist.objects.filter(user=request.user).values_list("dish_id", flat=True))
     else:
         wishlist_ids = []
 
@@ -67,6 +73,8 @@ def search_results(request):
         "query": query,
         "wishlist_ids": wishlist_ids,
         "hints": [],
+        "category_choices": Category.objects.all(),
+        "selected_category": selected_category,
     })
 
 #Review page ordered by created_date
@@ -92,6 +100,38 @@ def dish_reviews(request, dish_id, rest_id):
         "reviews": reviews,
         "avg_rating": avg_rating,
         "form": form,
+    })
+
+#Edit Review
+@login_required
+def review_edit(request, pk):
+    rev = get_object_or_404(Review, pk=pk)
+    if rev.user != request.user:
+        raise Http404
+    if request.method == "POST":
+        form = ReviewForm(request.POST, request.FILES, instance=rev)
+        if form.is_valid():
+            form.save()
+            return redirect("myapp:profile")
+    else:
+        form = ReviewForm(instance=rev)
+
+    return render(request, "myapp/review_edit.html", {
+        "form": form,
+        "review": rev,
+    })
+
+#Delete review
+@login_required
+def review_delete(request, pk):
+    rev = get_object_or_404(Review, pk=pk)
+    if rev.user != request.user:
+        raise Http404
+    if request.method == "POST":
+        rev.delete()
+        return redirect("myapp:profile")
+    return render(request, "myapp/review_confirm_delete.html", {
+        "review": rev,
     })
 
 #Signup page
@@ -231,33 +271,21 @@ def delete_profile(request):
     return render(request, "myapp/delete_profile.html")
 
 
+#Suggest for possible new dish restaurant from user
 @login_required
-def review_edit(request, pk):
-    rev = get_object_or_404(Review, pk=pk)
-    if rev.user != request.user:
-        raise Http404
-    if request.method == "POST":
-        form = ReviewForm(request.POST, request.FILES, instance=rev)
+def suggest_dishrestaurant(request):
+    if request.method == 'POST':
+        form = DishRestaurantSuggestionForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect("myapp:profile")
+            suggestion = form.save(commit=False)
+            suggestion.user = request.user
+            suggestion.save()
+            messages.success(
+                request,
+                "Thank you! Your suggestion has been submitted and is waiting for review."
+            )
+            return redirect('myapp:suggest_dishrestaurant')
     else:
-        form = ReviewForm(instance=rev)
+        form = DishRestaurantSuggestionForm()
 
-    return render(request, "myapp/review_edit.html", {
-        "form": form,
-        "review": rev,
-    })
-
-
-@login_required
-def review_delete(request, pk):
-    rev = get_object_or_404(Review, pk=pk)
-    if rev.user != request.user:
-        raise Http404
-    if request.method == "POST":
-        rev.delete()
-        return redirect("myapp:profile")
-    return render(request, "myapp/review_confirm_delete.html", {
-        "review": rev,
-    })
+    return render(request, 'myapp/suggest_dishrestaurant.html', {'form': form})

@@ -8,7 +8,7 @@
       {{ form.comments.label_tag }}<br>
       {{ form.comments }}
       {% for err in form.comments.errors %}
-        <div style="color:red">{{ err }}</div>
+        <div class="error">{{ err }}</div>
       {% endfor %}
       <small>(Optional) Add some notes here :)</small>
     </div>

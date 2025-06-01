@@ -1,35 +1,71 @@
 {% extends "myapp/base.html" %}
-
 {% block content %}
-  <h1>Search Results for “{{ query }}”</h1>
+    <h1>Search Results{% if query %} for “{{ query }}”{% endif %}</h1>
 
-  {% if not_found %}
-    <p>No dishes match “{{ query }}.”</p>
-    {% if hints %}
-      <p>Did you mean:</p>
-      <ul>
-        {% for name in hints %}
-          <li><a href="{% url 'myapp:search_results' %}?q={{ name|urlencode }}">{{ name }}</a></li>
-        {% endfor %}
-      </ul>
+    <form method="get">
+        <div>
+          <label>Search</label><br>
+            <input type="text" name="q" value="{{ query }}">
+        </div>
+
+        <div>
+            <h2>Category</h2><br>
+            <select name="category" id="id_category">
+                <option value="">All Categories</option>
+                {% for cat in category_choices %}
+                    <option
+                        value="{{ cat.id }}"
+                        {% if selected_category and cat.id == selected_category.id %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ cat.title }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <button type="submit">Filter</button>
+            <a href="{% url 'myapp:search_results' %}">Clear</a>
+        </div>
+    </form>
+
+    <hr>
+
+    {% if not_found %}
+        <p>No dishes match “{{ query }}.”</p>
+        {% if hints %}
+            <p>Did you mean:</p>
+            <ul>
+                {% for name in hints %}
+                    <li>
+                        <a href="{% url 'myapp:search_results' %}?q={{ name|urlencode }}{% if selected_category %}&category={{ selected_category.id }}{% endif %}">
+                            {{ name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p><a href="{% url 'myapp:home' %}">Try again</a></p>
+        {% endif %}
     {% else %}
-      <p><a href="{% url 'myapp:home' %}">Try again</a></p>
-    {% endif %}
-  {% else %}
-    <ul>
-      {% for dr in combos %}
-        <li>
-          <strong>{{ dr.restaurant.name }}</strong>  
-          — <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">Detail</a>  
-          — <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">Reviews</a>
+        <ul>
+            {% for dr in combos %}
+                <li>
+                    <strong>{{ dr.restaurant.name }}</strong>
+                    —
+                    <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">Detail</a>
+                    —
+                    <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">Reviews</a>
 
-          {% if user.is_authenticated %}
-            {% if dr.dish.id in wishlist_ids %}
-              <span>[In Wishlist]</span>
-            {% endif %}
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+                    {% if user.is_authenticated %}
+                        {% if dr.dish.id in wishlist_ids %}
+                            <br><span>[In Wishlist]</span>
+                        {% endif %}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}

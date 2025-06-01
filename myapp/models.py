@@ -63,15 +63,28 @@ class DishRestaurant(models.Model):
         name = self.local_name or self.dish.name
         return f"{self.restaurant.name} – {name}"
 
+class DishRestaurantSuggestion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    dish_name = models.CharField(max_length=45,help_text="Enter the dish name")
+    restaurant_name = models.CharField(max_length=45,help_text="Enter the restaurant name")
+    price = models.DecimalField(max_digits=5,decimal_places=2,validators=[MinValueValidator(0.1)],help_text="Suggested price in Nok")
+    available  = models.BooleanField(default=True,help_text="Check if this dish is currently available.")
+    description = models.TextField(blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_reviewed  = models.BooleanField(default=False,help_text="Set to True once an admin has processed this suggestion.")
 
+    class Meta:
+        verbose_name_plural = "Dish-Restaurant Suggestions"
+        ordering = ['-submitted_at']
 
+    def __str__(self):
+        return f"Suggestion by {self.user.username}: {self.dish_name} @ {self.restaurant_name}"
 
 class Review(models.Model):
     created_date    = models.DateTimeField(auto_now_add=True)
     rating          = models.FloatField(
-        validators=[MinValueValidator(0.0), MaxValueValidator(5.0)]
-    )
-    price_paid      = models.IntegerField()
+        validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
+    price_paid      = models.DecimalField(max_digits=5,decimal_places=2,validators=[MinValueValidator(0.1)],help_text="Suggested price in Nok")
     description     = models.TextField()
     photo           = models.ImageField(upload_to='reviews/', blank=True, null=True)
     user            = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -94,30 +107,4 @@ class Wishlist(models.Model):
     def __str__(self):
         return f"{self.user.username} wants {self.dish.name}"
     
-
-
-class Review(models.Model):
-    created_date    = models.DateTimeField(auto_now_add=True)
-    rating          = models.FloatField(
-        validators=[MinValueValidator(0.0), MaxValueValidator(5.0)]
-    )
-    price_paid      = models.IntegerField()
-    description     = models.TextField()
-    photo           = models.ImageField(upload_to='reviews/', blank=True, null=True)
-    user            = models.ForeignKey(User, on_delete=models.CASCADE)
-    dish_restaurant = models.ForeignKey(
-        DishRestaurant, on_delete=models.CASCADE, related_name='reviews'
-    )
-
-    def __str__(self):
-        return f"{self.user.username}'s review of {self.dish_restaurant}"
-
-    def clean(self):
-        from django.core.exceptions import ValidationError
-
-        if self.rating is not None and self.price_paid is not None:
-            if self.rating < 1.0 and self.price_paid <= 0:
-                raise ValidationError(
-                    {"price_paid": "If rating < 1.0, price_paid must be > 0."}
-                )
 

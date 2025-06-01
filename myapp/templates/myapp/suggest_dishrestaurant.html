@@ -1,0 +1,24 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}
+    Suggest a New Dish–Restaurant Entry
+{% endblock %}
+
+{% block content %}
+    <h2>Suggest a New Dish–Restaurant Entry</h2>
+    {% if form.non_field_errors %}
+      <div class="error">
+            {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div>
+            <button type="submit">Submit Suggestion</button>
+            <a href="{% url 'myapp:home' %}">Cancel</a>
+        </div>
+    </form>
+{% endblock %}
+

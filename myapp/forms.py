@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import Feedback, Review, DishRestaurant, Dish, Restaurant, Wishlist
+from .models import Feedback, Review, DishRestaurant, Dish, Restaurant, Wishlist,DishRestaurantSuggestion,Category
 
 
 # 1
@@ -76,19 +76,18 @@ class ReviewForm(forms.ModelForm):
         return photo
 
 # 3
-class DishRestaurantForm(forms.ModelForm):
+class DishRestaurantSuggestionForm(forms.ModelForm):
     class Meta:
-        model = DishRestaurant
-        fields = ['restaurant', 'dish', 'local_name']
-
-    def clean(self):
-        cleaned = super().clean()
-        restaurant = cleaned.get('restaurant')
-        dish = cleaned.get('dish')
-        if restaurant and dish:
-            if DishRestaurant.objects.filter(restaurant=restaurant, dish=dish).exists():
-                self.add_error('dish', "This dish is already listed for that restaurant.")
-        return cleaned
+        model = DishRestaurantSuggestion
+        fields = ['dish_name','restaurant_name','price','available','description']
+        widgets = {
+            'description': forms.Textarea(attrs={
+                'rows': 3,
+                'placeholder': (
+                    "e.g. 'The Classic: includes cheddar, lettuce, tomato...'"
+                )
+            }),
+        }
 
 
 # 4
@@ -104,7 +103,7 @@ class WishlistForm(forms.ModelForm):
         }
         labels = {
             'comments': 'Notes (optional)',
-        }
+            }
 
 
 

@@ -1,5 +1,7 @@
 {% extends "myapp/base.html" %}
-
+{% block title %}
+    Submit Dish Review
+{% endblock %}
 {% block content %}
   <h1>Reviews for {{ dr.local_name|default:dr.dish.name }} @ {{ dr.restaurant.name }}</h1>
   <p>Average rating: {{ avg_rating|default:"No ratings yet" }}</p>

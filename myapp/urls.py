@@ -19,6 +19,8 @@ urlpatterns = [
 
     path('feedback/', views.feedback, name='feedback'),
 
+    path('dishrestaurant/suggest/',views.suggest_dishrestaurant,name="suggest_dishrestaurant"),
+
     path('signup/', views.signup, name='signup'),
 
     path('wishlist/add/<int:dish_id>/', views.wishlist_add, name='wishlist_add'),
@@ -27,5 +29,6 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/change_password/', views.change_password, name='change_password'),
     path('profile/delete/', views.delete_profile, name='delete_profile'),
+
 
 ]
