@@ -43,11 +43,7 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = ['rating', 'price_paid', 'description', 'photo']
         widgets = {
-            'description': forms.Textarea(attrs={
-                'rows': 4,
-                'placeholder': 'Your thoughts…'
-            }),
-        }
+            'description': forms.Textarea(attrs={'rows': 4})}
         labels = {
             'rating': 'Rating',
             'price_paid': 'Price Paid',

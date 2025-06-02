@@ -5,16 +5,24 @@
 
 {% block content %}
   <h2>Edit Your Review</h2>
-      <h3>
-        {{ review.dish_restaurant.local_name|default:review.dish_restaurant.dish.name }}
-        @ {{ review.dish_restaurant.restaurant.name }}
-      </h3>
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div><button type="submit">Save Changes</button></div>
-        <a href="{% url 'myapp:dish_reviews' 
-                     review.dish_restaurant.dish.id 
-                     review.dish_restaurant.restaurant.id %}">Cancel</a>
-      </form>
+  <h3>
+    {{ review.dish_restaurant.local_name|default:review.dish_restaurant.dish.name }}
+    @ {{ review.dish_restaurant.restaurant.name }}
+  </h3>
+
+  <form method="post" enctype="multipart/form-data">
+    {{ form.non_field_errors }}
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if review.photo %}
+    <div>
+      <p>Current Photo:</p>
+      <img src="{{ review.photo.url }}" alt="Current photo by {{ review.user.username }}"
+      style="max-width:300px; height:auto;">
+      <small>(Leave blank below to keep this image.)</small>
+    </div>
+    {% endif %}
+    <div><button type="submit">Save Changes</button></div>
+    <a href="{% url 'myapp:dish_reviews' review.dish_restaurant.dish.id review.dish_restaurant.restaurant.id %}">Cancel</a>
+  </form>
 {% endblock %}

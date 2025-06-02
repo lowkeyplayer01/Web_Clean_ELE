@@ -61,19 +61,21 @@
       <li>
         <p><strong>{{ r.user.username }}</strong> — Rating {{ r.rating }} — nok{{ r.price_paid }}</p>
         {% if r.photo %}
-          <p>Photo: <a href="{{ rev.photo.url }}">View</a></p>
-        {% endif %}
+          <p> <img src="{{ r.photo.url }}" alt="Photo by {{ r.user.username }}"style="max-width:300px; height:auto;">
+          </p>
+      {% endif %}
         <p>{{ r.description }}</p>
         {% if user.is_authenticated and r.user == user %}
           <p>
-            <a href="{% url 'myapp:review_edit' rev.id %}">Edit</a> 
-            <a href="{% url 'myapp:review_delete' rev.id %}">Delete</a>
+            <a href="{% url 'myapp:review_edit' r.id %}">Edit</a> 
+            <a href="{% url 'myapp:review_delete' r.id %}">Delete</a>
           </p>
         {% endif %}
       </li>
     {% empty %}
       <li>No reviews yet.</li>
     {% endfor %}
+  </ul>
 {% endblock %}
 
   
