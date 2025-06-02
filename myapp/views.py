@@ -16,7 +16,7 @@ def landing(request):
 
 # home page for Top 5 according to review counts
 def home(request):
-    trending = (DishRestaurant.objects.annotate(review_count=Count("reviews")).order_by("-review_count")[:5])
+    trending = DishRestaurant.objects.annotate(review_count=Count("reviews")).order_by("-review_count")[:5]
     all_combos = DishRestaurant.objects.select_related("dish", "restaurant")
     return render(request, "myapp/home.html", {"trending": trending,"all_combos":all_combos})
 
@@ -77,7 +77,6 @@ def search_results(request):
         "query": query,
         "in_wishlist": in_wishlist,
         "wishlist_item_id": wishlist_item_id,
-        "hints": [],
         "category_choices": Category.objects.all(),
         "selected_category": selected_category,
     })
@@ -215,9 +214,7 @@ def profile(request):
         paired_wishlist.append((item, combo))
 
     # Also grab all reviews this user has written
-    my_reviews = Review.objects.filter(user=user).select_related(
-        "dish_restaurant__dish", "dish_restaurant__restaurant"
-    ).order_by("-created_date")
+    my_reviews = Review.objects.filter(user=user).select_related("dish_restaurant__dish", "dish_restaurant__restaurant").order_by("-created_date")
 
     return render(request, "myapp/profile.html", {
         "paired_wishlist": paired_wishlist,
@@ -264,7 +261,6 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            messages.success(request, "Password successfully updated.")
             return redirect("myapp:profile")
         else:
             messages.error(request, "Please correct the errors below.")
@@ -280,7 +276,6 @@ def delete_profile(request):
         user = request.user
         logout(request)
         user.delete()
-        messages.success(request, "Your account has been deleted.")
         return redirect("myapp:home")
     return render(request, "myapp/delete_profile.html")
 
@@ -294,10 +289,6 @@ def suggest_dishrestaurant(request):
             suggestion = form.save(commit=False)
             suggestion.user = request.user
             suggestion.save()
-            messages.success(
-                request,
-                "Thank you! Your suggestion has been submitted and is waiting for review."
-            )
             return redirect('myapp:suggest_dishrestaurant')
     else:
         form = DishRestaurantSuggestionForm()
