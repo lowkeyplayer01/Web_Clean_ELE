@@ -104,6 +104,7 @@ def dish_reviews(request, dish_id, rest_id):
             rev.user = request.user
             rev.dish_restaurant = dr
             rev.save()
+            messages.success(request, "Your review was submitted successfully!")
             return redirect("myapp:dish_reviews", dish_id=dish_id, rest_id=rest_id)
     else:
         form = ReviewForm()
@@ -127,6 +128,7 @@ def review_edit(request, pk):
         form = ReviewForm(request.POST, request.FILES, instance=rev)
         if form.is_valid():
             form.save()
+            messages.success(request, "Your review was edited successfully!")
             return redirect("myapp:profile")
     else:
         form = ReviewForm(instance=rev)
@@ -144,6 +146,7 @@ def review_delete(request, pk):
         raise Http404
     if request.method == "POST":
         rev.delete()
+        messages.success(request, "Your review was deleted successfully!")
         return redirect("myapp:profile")
     return render(request, "myapp/review_confirm_delete.html", {
         "review": rev,
@@ -156,6 +159,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "Welcome! You have signed up successfully!")
             return redirect("myapp:home")
     else:
         form = SignUpForm()
@@ -170,6 +174,7 @@ def feedback(request):
             f = form.save(commit=False)
             f.user = request.user
             f.save()
+            messages.success(request, "Thank you for your feedback!")
             return redirect("myapp:home")
     else:
         form = FeedbackForm()
@@ -235,6 +240,7 @@ def wishlist_add(request, dish_id):
             item = form.save(commit=False)
             item.user = request.user
             item.dish = dish
+            messages.success(request, "Dish already added to your wishlist!")
             item.save()
             return redirect("myapp:profile")
     else:
@@ -261,6 +267,7 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
+            messages.success(request, "Password updated successfully!")
             return redirect("myapp:profile")
         else:
             messages.error(request, "Please correct the errors below.")
@@ -276,6 +283,7 @@ def delete_profile(request):
         user = request.user
         logout(request)
         user.delete()
+        messages.success(request, "Your profile has been deleted.")
         return redirect("myapp:home")
     return render(request, "myapp/delete_profile.html")
 
@@ -289,6 +297,7 @@ def suggest_dishrestaurant(request):
             suggestion = form.save(commit=False)
             suggestion.user = request.user
             suggestion.save()
+            messages.success(request, "Thanks for your contribution! :)")
             return redirect('myapp:suggest_dishrestaurant')
     else:
         form = DishRestaurantSuggestionForm()

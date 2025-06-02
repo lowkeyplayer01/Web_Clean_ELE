@@ -50,7 +50,7 @@
     {% else %}
         <ul>
             {% for dr in combos %}
-                <li><strong>{{ dr.restaurant.name }}</strong>
+                <li><strong>{{ dr.dish.name }}</strong> @ <strong>{{ dr.restaurant.name }}</strong><br>
                     —
                     <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">Detail</a>
                     —

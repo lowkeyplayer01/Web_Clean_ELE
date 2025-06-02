@@ -68,7 +68,7 @@ class ReviewForm(forms.ModelForm):
 class DishRestaurantSuggestionForm(forms.ModelForm):
     class Meta:
         model = DishRestaurantSuggestion
-        fields = ['dish_name','restaurant_name','price','available','description']
+        fields = ['dish_name','local_name','restaurant_name','price','available','description']
         widgets = {'description': forms.Textarea(attrs={'rows': 3,'placeholder': 'How about give us some details'})}
 
 # 4

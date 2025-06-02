@@ -63,6 +63,7 @@ class DishRestaurant(models.Model):
 class DishRestaurantSuggestion(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     dish_name = models.CharField(max_length=45)
+    local_name = models.CharField(max_length=100, blank=True)
     restaurant_name = models.CharField(max_length=45)
     price = models.DecimalField(max_digits=5,decimal_places=2,validators=[MinValueValidator(0.1)],help_text="Suggested price in NOK")
     available = models.BooleanField(default=True,help_text="Currently available?")
