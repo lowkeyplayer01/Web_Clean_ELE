@@ -61,6 +61,7 @@
                 {% if not in_wishlist %}
                     <a href="{% url 'myapp:wishlist_add' dr.dish.id %}">
                     <button type="submit">Add to Wishlist</button>
+                    </a>
                     {% else %}
                     <form action="{% url 'myapp:wishlist_remove' wishlist_item_id %}" method="post">
                     {% csrf_token %}

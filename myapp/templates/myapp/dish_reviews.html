@@ -7,15 +7,16 @@
   <p>Average rating: {{ avg_rating|default:"No ratings yet" }}</p>
 
   {% if user.is_authenticated %}
-  {% if not in_wishlist %}
-  <a href="{% url 'myapp:wishlist_add' dr.dish.id %}">
+    {% if not in_wishlist %}
+      <a href="{% url 'myapp:wishlist_add' dr.dish.id %}">
       <button type="submit">Add to Wishlist</button>
-  {% else %}
-    <form action="{% url 'myapp:wishlist_remove' wishlist_item_id %}" method="post">
-      {% csrf_token %}
-      <button type="submit">Remove from Wishlist</button>
-    </form>
-  {% endif %}
+      </a>
+    {% else %}
+      <form action="{% url 'myapp:wishlist_remove' wishlist_item_id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Remove from Wishlist</button>
+      </form>
+    {% endif %}
   {% endif %}
 
   {% if user.is_authenticated %}
