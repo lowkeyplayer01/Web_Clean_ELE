@@ -17,7 +17,8 @@ def landing(request):
 # home page for Top 5 according to review counts
 def home(request):
     trending = (DishRestaurant.objects.annotate(review_count=Count("reviews")).order_by("-review_count")[:5])
-    return render(request, "myapp/home.html", {"trending": trending})
+    all_combos = DishRestaurant.objects.select_related("dish", "restaurant")
+    return render(request, "myapp/home.html", {"trending": trending,"all_combos":all_combos})
 
 
 #Display Search Results along

@@ -28,5 +28,18 @@
       <li>No trending dishes yet.</li>
     {% endfor %}
   </ul>
+
+  <hr>
+  <h2>Browse All </h2>
+  <ul>
+    {% for dr in all_combos %}
+    <li>
+      <strong>{{  dr.dish.name }}</strong> – {{dr.restaurant.name }}
+      <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">
+        Reviews
+      </a>
+    </li>
+  {% endfor %}
+</ul>
 {% endblock %}
 
