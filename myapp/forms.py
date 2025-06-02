@@ -80,15 +80,7 @@ class DishRestaurantSuggestionForm(forms.ModelForm):
     class Meta:
         model = DishRestaurantSuggestion
         fields = ['dish_name','restaurant_name','price','available','description']
-        widgets = {
-            'description': forms.Textarea(attrs={
-                'rows': 3,
-                'placeholder': (
-                    "e.g. 'The Classic: includes cheddar, lettuce, tomato...'"
-                )
-            }),
-        }
-
+        widgets = {'description': forms.Textarea(attrs={'rows': 3})}
 
 # 4
 class WishlistForm(forms.ModelForm):

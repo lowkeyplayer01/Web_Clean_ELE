@@ -13,14 +13,12 @@
             <select name="category" id="id_category">
                 <option value="">All Categories</option>
                 {% for cat in category_choices %}
-                    <option
-                        value="{{ cat.id }}"
-                        {% if selected_category and cat.id == selected_category.id %}
-                            selected
-                        {% endif %}
-                    >
-                        {{ cat.title }}
-                    </option>
+                <option value="{{ cat.id }}"
+                 {% if selected_category and cat.id == selected_category.id %}
+                    selected
+                {% endif %}>
+                    {{ cat.title }}
+                </option>
                 {% endfor %}
             </select>
         </div>
@@ -52,18 +50,26 @@
     {% else %}
         <ul>
             {% for dr in combos %}
-                <li>
-                    <strong>{{ dr.restaurant.name }}</strong>
+                <li><strong>{{ dr.restaurant.name }}</strong>
                     —
                     <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">Detail</a>
                     —
                     <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">Reviews</a>
 
-                    {% if user.is_authenticated %}
-                        {% if dr.dish.id in wishlist_ids %}
-                            <br><span>[In Wishlist]</span>
-                        {% endif %}
-                    {% endif %}
+    
+            {% if user.is_authenticated %}
+                {% if not in_wishlist %}
+                    <a href="{% url 'myapp:wishlist_add' dr.dish.id %}">
+                    <button type="submit">Add to Wishlist</button>
+                    {% else %}
+                    <form action="{% url 'myapp:wishlist_remove' wishlist_item_id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Remove from Wishlist</button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <p><a href="{% url 'login' %}">Log in</a> to add this dish to your wishlist.</p>
+            {% endif %}
                 </li>
             {% endfor %}
         </ul>

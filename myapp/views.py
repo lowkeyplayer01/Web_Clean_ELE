@@ -21,7 +21,7 @@ def home(request):
     return render(request, "myapp/home.html", {"trending": trending,"all_combos":all_combos})
 
 
-#Display Search Results along
+#Display Search Results along with hints, wishlist
 def search_results(request):
     query = request.GET.get("q", "").strip()
     category_id = request.GET.get("category", "").strip()
@@ -63,16 +63,20 @@ def search_results(request):
     else:
         selected_category = None
 
+    in_wishlist = False
+    wishlist_item_id = None
     if request.user.is_authenticated:
-        wishlist_ids = list(Wishlist.objects.filter(user=request.user).values_list("dish_id", flat=True))
-    else:
-        wishlist_ids = []
+        item = Wishlist.objects.filter(user=request.user, dish_id=dish.id).first()
+        if item:
+            in_wishlist = True
+            wishlist_item_id = item.id
 
     return render(request, "myapp/search_results.html", {
         "dish": dish,
         "combos": combos,
         "query": query,
-        "wishlist_ids": wishlist_ids,
+        "in_wishlist": in_wishlist,
+        "wishlist_item_id": wishlist_item_id,
         "hints": [],
         "category_choices": Category.objects.all(),
         "selected_category": selected_category,
@@ -83,6 +87,15 @@ def dish_reviews(request, dish_id, rest_id):
     dr = get_object_or_404(DishRestaurant, dish_id=dish_id, restaurant_id=rest_id)
     reviews = dr.reviews.order_by("-created_date")
     avg_rating = reviews.aggregate(avg=Avg("rating"))["avg"]
+
+    in_wishlist = False
+    wishlist_item_id = None
+    if request.user.is_authenticated:
+        item = Wishlist.objects.filter(user=request.user,dish_id=dish_id).first()
+        if item:
+            in_wishlist = True
+            wishlist_item_id = item.id
+
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect("login")
@@ -101,6 +114,8 @@ def dish_reviews(request, dish_id, rest_id):
         "reviews": reviews,
         "avg_rating": avg_rating,
         "form": form,
+        'in_wishlist': in_wishlist,
+        'wishlist_item_id': wishlist_item_id,
     })
 
 #Edit Review
@@ -214,19 +229,16 @@ def profile(request):
 def wishlist_add(request, dish_id):
     dish = get_object_or_404(Dish, pk=dish_id)
 
-    # If already in wishlist, bounce straight back to profile
     if Wishlist.objects.filter(user=request.user, dish=dish).exists():
         return redirect("myapp:profile")
 
     if request.method == "POST":
         form = WishlistForm(request.POST)
         if form.is_valid():
-            comments = form.cleaned_data["comments"]
-            Wishlist.objects.create(
-                user=request.user,
-                dish=dish,
-                comments=comments,
-            )
+            item = form.save(commit=False)
+            item.user = request.user
+            item.dish = dish
+            item.save()
             return redirect("myapp:profile")
     else:
         form = WishlistForm()
@@ -235,6 +247,7 @@ def wishlist_add(request, dish_id):
         "form": form,
         "dish": dish,
     })
+
 
 
 @login_required

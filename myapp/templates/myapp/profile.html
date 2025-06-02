@@ -68,4 +68,9 @@
   {% else %}
     <p>You haven’t written any reviews yet.</p>
   {% endif %}
+
+  <h2>Feedback</h2>
+  <p>
+    <a href="{% url 'myapp:feedback' %}">Submit Site Feedback</a>
+  </p>
 {% endblock %}

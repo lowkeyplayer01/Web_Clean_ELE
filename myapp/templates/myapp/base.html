@@ -9,7 +9,7 @@
     <ul>
       <li><a href="{% url 'myapp:landing' %}">Home</a></li>
       <li><a href="{% url 'myapp:profile' %}">Profile</a></li>
-      <li><a href="{% url 'myapp:feedback' %}">Feedback</a></li>
+      <li><a href="{% url 'myapp:suggest_dishrestaurant' %}">Suggest Dish</a></li>
       <li><a href="{% url 'myapp:restaurant_list' %}">Restaurants</a></li>
       {% if user.is_authenticated %}
         <li>

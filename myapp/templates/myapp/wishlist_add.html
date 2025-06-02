@@ -1,9 +1,15 @@
 {% extends "myapp/base.html" %}
+{% block title %}
+Add “{{ dish.name }}” to Wishlist
+{% endblock %}
+
 {% block content %}
   <h1>Add “{{ dish.name }}” to Your Wishlist</h1>
+
   <form method="post">
     {% csrf_token %}
     {{ form.non_field_errors }}
+
     <div>
       {{ form.comments.label_tag }}<br>
       {{ form.comments }}
@@ -13,8 +19,9 @@
       <small>(Optional) Add some notes here :)</small>
     </div>
 
-    <button type="submit">Add to Wishlist</button>
-    <a href="javascript:history.back()">Cancel</a>
-    
+    <div>
+      <button type="submit">Add to Wishlist</button>
+      <a href="{% url 'myapp:profile' %}">Cancel</a>
+    </div>
   </form>
 {% endblock %}
