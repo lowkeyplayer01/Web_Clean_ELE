@@ -50,9 +50,8 @@
     {% else %}
         <ul>
             {% for dr in combos %}
-                <li><strong>{{ dr.dish.name }}</strong> @ <strong>{{ dr.restaurant.name }}</strong><br>
-                    —
-                    <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">Detail</a>
+                <li><strong>{{ dr.dish.name }}</strong> @ <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">
+                    {{ dr.restaurant.name }}</a><br>
                     —
                     <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">Reviews</a>
 

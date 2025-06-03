@@ -12,13 +12,8 @@ class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ['suggestions']
-        widgets = {'suggestions': forms.Textarea(attrs={'rows': 5,'placeholder': 'Write your feedback…',}),
+        widgets = {'suggestions': forms.Textarea(attrs={'rows': 5,'maxlength':1000,"minlength": 20,'required':True,'placeholder': 'Write your feedback…',}),
         }
-        error_messages = {
-            'suggestions': {
-                'required': "Feedback cannot be blank.",
-                'min_length': "Minimum 20 characters.",
-                'max_length': "Max 1000 characters "}}
 
 
     def clean_suggestions(self):
@@ -36,13 +31,21 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['rating', 'price_paid', 'description', 'photo']
-        widgets = {'description': forms.Textarea(attrs={'rows': 4})}
+        widgets = {
+            'rating': forms.NumberInput(attrs={'min': 0.1,'max': 5.0,'step': 0.1,'required': True}),
+            'price_paid': forms.NumberInput(attrs={'min': 0.1,'step': 0.01,'required': True}),
+            'description': forms.Textarea(attrs={'rows': 4,'required': True,'maxlength':1000,"minlength": 5,'placeholder': 'How was it? 5-1000 characters...'})},
         labels = {
             'rating': 'Rating',
             'price_paid': 'Price Paid',
             'description': 'Review',
-            'photo': 'Photo (optional)',
-        }
+            'photo': 'Photo (optional)'}
+
+        labels = {
+            'rating': 'Rating',
+            'price_paid': 'Price Paid',
+            'description': 'Review',
+            'photo': 'Photo (optional)'}
 
     def clean_description(self):
         text = self.cleaned_data['description'].strip()
@@ -69,14 +72,14 @@ class DishRestaurantSuggestionForm(forms.ModelForm):
     class Meta:
         model = DishRestaurantSuggestion
         fields = ['dish_name','local_name','restaurant_name','price','available','description']
-        widgets = {'description': forms.Textarea(attrs={'rows': 3,'placeholder': 'How about give us some details'})}
+        widgets = {'description': forms.Textarea(attrs={'rows': 3,'maxlength':1000,"minlength": 5,'placeholder': 'How about give us some details'})}
 
 # 4
 class WishlistForm(forms.ModelForm):
     class Meta:
         model = Wishlist
         fields = ['comments']
-        widgets = {'comments': forms.Textarea(attrs={'rows': 3,'placeholder': 'Any notes?'})}
+        widgets = {'comments': forms.Textarea(attrs={'rows': 3,'maxlength':1000,"minlength": 5,'placeholder': 'Any notes?'})}
         labels = {'comments': 'Notes (optional)'}
 
 
