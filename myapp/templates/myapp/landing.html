@@ -1,11 +1,28 @@
 {% extends "myapp/base.html" %}
-{% block title %}
-    Welcome
-{% endblock %}
+{% load static %}
+
+{% block title %}Foodish — Welcome{% endblock %}
+
+
 {% block content %}
-  <h1>Welcome to Foodish</h1>
-  <p>This is the landing page. Feel free to explore.</p>
-  <p><a href="{% url 'myapp:home' %}">Go to Search</a></p>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Foodish</h1>
+      <p>Find Your Favorite Dish, Not Just a Restaurant.</p>
+      <a href="{% url 'myapp:home' %}" class="btn-ready">Ready to Explore?</a>
+    </div>
+  </section>
+
+  <section class="intro">
+    <div class="container">
+      <h2 class="intro-title">Our Story</h2>
+      <p class="intro-text">
+        I created Foodish because I used to become a regular at a restaurant
+        just for one specific dish. Most websites and apps focus on restaurants,
+        but dish-lovers deserve their own spotlight. Here on Foodish, you can
+        discover exactly where to go for that one dish you've fallen in love with.
+      </p>
+    </div>
+  </section>
+
 {% endblock %}
-
-

@@ -1,76 +1,84 @@
 {% extends "myapp/base.html" %}
-{% block title %}
-    My Profile
-{% endblock %}
+{% block title %}My Profile{% endblock %}
 
 {% block content %}
-  <h1>My Profile</h1>
+<section class="profile-page">
+  <div class="content-wrapper">
+    <h1>My Profile</h1>
 
-  <h2>Account Information</h2>
-  <p><strong>Username:</strong> {{ request.user.username }}</p>
-  <p><strong>Email:</strong> {{ request.user.email }}</p>
-  <p><strong>First Name:</strong> {{ request.user.first_name }}</p>
-  <p><strong>Last Name:</strong> {{ request.user.last_name }}</p>
-  <p>
-    <a href="{% url 'myapp:change_password' %}">Change Password</a> |
-    <a href="{% url 'myapp:delete_profile' %}">Delete Account</a>
-  </p>
+    <div class="section">
+      <h2>Account Information</h2>
+      <p>Username: {{ user.username }}</p>
+      <p>Email: {{ user.email }}</p>
+      <p>First Name: {{ user.first_name }}</p>
+      <p>Last Name: {{ user.last_name }}</p>
+      <p>
+        <a href="{% url 'password_change' %}">Change Password</a>
+        |
+        <a href="{% url 'myapp:delete_profile' %}">Delete Account</a>
+      </p>
+    </div>
 
-  <hr>
-
-  <h2>My Wishlist</h2>
-  <p><a href="{% url 'myapp:home' %}">Search to Add</a></p>
-  {% if paired_wishlist %}
-    <ul>
-      {% for item, combo in paired_wishlist %}
-        <li>
-          {% if combo %}
-            {# Found a matching DishRestaurant combo, so link to its review page #}
-            <a href="{% url 'myapp:dish_reviews' combo.dish.id combo.restaurant.id %}">
-              {{ item.dish.name }}
+    <div class="section">
+      <h2>My Wishlist</h2>
+      {% if wishlist_items %}
+        {% for item in wishlist_items %}
+        <div class="wishlist-item">
+          <p>{{ item.dish.name }} @ {{ item.dish_restaurant.restaurant.name }}</p>
+          <p>Added on {{ item.created_date|date:"M d, Y H:i" }}</p>
+          {% if item.notes %}
+          <p><em>Note: {{ item.notes }}</em></p>
+          {% endif %}
+          <p>
+            <a href="{% url 'myapp:wishlist_remove' item.id %}">
+              Remove
             </a>
-          {% else %}
-            {# No combo found—just show the dish name #}
-            {{ item.dish.name }}
-          {% endif %}
-          <br>
-          <small>Added on {{ item.created_date|date:"Y-m-d H:i" }}</small>
-          {% if item.comments %}
-            <br><em>Note: {{ item.comments }}</em>
-          {% endif %}
-          <br>
-          <a href="{% url 'myapp:wishlist_remove' item.id %}">Remove</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Your wishlist is empty.</p>
-  {% endif %}
+          </p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p>No items in wishlist.</p>
+      {% endif %}
+      <p>
+        <a href="{% url 'myapp:home' %}" class="link-highlight">Search to add more dishes</a>
+      </p>
+    </div>
 
-  <hr>
 
-  <h2>My Reviews</h2>
-  {% if my_reviews %}
-    <ul>
-      {% for rev in my_reviews %}
-        <li>
-          <strong>
-            {{ rev.dish_restaurant.restaurant.name }} –
-            {{ rev.dish_restaurant.dish.name }}
-          </strong><br>
-          Rated ★ {{ rev.rating|floatformat:1 }} on {{ rev.created_date|date:"Y-m-d H:i" }}<br>
-          <p>{{ rev.description }}</p>
-          <a href="{% url 'myapp:review_edit' rev.id %}">Edit</a> |
-          <a href="{% url 'myapp:review_delete' rev.id %}">Delete</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>You haven’t written any reviews yet.</p>
-  {% endif %}
+    <div class="section">
+      <h2>My Reviews</h2>
+      {% if reviews %}
+        {% for r in reviews %}
+        <div class="review-item">
+          <p>
+            {{ r.dish_restaurant.restaurant.name }}
+            &ndash;
+            {{ r.dish_restaurant.dish.name }}
+          </p>
+          <p>
+            Rated ★ {{ r.rating }}
+            on {{ r.created_date|date:"M d, Y H:i" }}
+          </p>
+          <p>{{ r.description }}</p>
+          <p>
+            <a href="{% url 'myapp:review_edit' r.id %}">Edit</a>
+            <a href="{% url 'myapp:review_delete' r.id %}">Delete</a>
+          </p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p>No reviews yet.</p>
+      {% endif %}
+    </div>
 
-  <h2>Feedback</h2>
-  <p>
-    <a href="{% url 'myapp:feedback' %}">Submit Site Feedback</a>
-  </p>
+    <div class="section">
+      <h2>Feedback</h2>
+      <p>
+        <a href="{% url 'myapp:feedback' %}">
+          Submit Site Feedback
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
 {% endblock %}

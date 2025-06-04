@@ -1,77 +1,129 @@
 {% extends "myapp/base.html" %}
+{% load static %}
+
+{% block title %}Foodish  Search Results{% endblock %}
+
+
 {% block content %}
-    <h1>Search Results{% if query %} for “{{ query }}”{% endif %}</h1>
+  <section class="search-hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h1>Search Results
+        {% if query %}
+          for “{{ query }}”
+        {% endif %}
+      </h1>
 
-    <form method="get">
-        <div>
-          <label>Search</label><br>
-            <input type="text" name="q" value="{{ query }}">
-        </div>
+      <form method="get" action="{% url 'myapp:search_results' %}" class="search-group">
+        <input type="text" name="q" id="id_query" required value="{{ query }}"placeholder="Enter dish name :)">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+  </section>
 
-        <div>
-            <h2>Category</h2><br>
-            <select name="category" id="id_category">
-                <option value="">All Categories</option>
-                {% for cat in category_choices %}
-                <option value="{{ cat.id }}"
-                 {% if selected_category and cat.id == selected_category.id %}
-                    selected
-                {% endif %}>
-                    {{ cat.title }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
 
-        <div>
-            <button type="submit">Filter</button>
-            <a href="{% url 'myapp:search_results' %}">Clear</a>
-        </div>
+  <div class="container results-content">
+    <form method="get" action="{% url 'myapp:search_results' %}" class="filter-form">
+      <input type="hidden" name="q" value="{{ query }}">
+      <div class="form-row">
+        <label for="id_category">Category</label>
+        <select name="category" id="id_category">
+          <option value="">All Categories</option>
+          {% for cat in category_choices %}
+            <option
+              value="{{ cat.id }}"
+              {% if selected_category and cat.id == selected_category.id %}
+                selected
+              {% endif %}
+            >
+              {{ cat.title }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-row form-actions">
+        <button type="submit" class="btn-filter">Filter</button>
+        <a
+          href="{% url 'myapp:search_results' %}?q={{ query|urlencode }}"
+          class="link-clear"
+        >
+          Clear
+        </a>
+      </div>
     </form>
 
-    <hr>
-
-    {% if not_found %}
-        <p>No dishes match “{{ query }}.”</p>
+    {% if combos|length == 0 %}
+      {% if selected_category %}
+        <p class="no-data">
+          No dishes found in category “{{ selected_category.title }}.”
+        </p>
+      {% else %}
+        <p class="no-data">
+          No dishes match “{{ query }}.”
+        </p>
         {% if hints %}
-            <p>Did you mean:</p>
-            <ul>
-                {% for name in hints %}
-                    <li>
-                        <a href="{% url 'myapp:search_results' %}?q={{ name|urlencode }}{% if selected_category %}&category={{ selected_category.id }}{% endif %}">
-                            {{ name }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p><a href="{% url 'myapp:home' %}">Try again</a></p>
+            <p class="hint-text">
+                Did you mean
+                <a href="{% url 'myapp:search_results' %}?q={{ hints.0|urlencode }}{% if selected_category %}&category={{ selected_category.id }}{% endif %}"
+                class="hint-link">
+                “{{ hints.0 }}”
+                </a>
+                ?
+            </p>
+          
         {% endif %}
-    {% else %}
-        <ul>
-            {% for dr in combos %}
-                <li><strong>{{ dr.dish.name }}</strong> @ <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">
-                    {{ dr.restaurant.name }}</a><br>
-                    —
-                    <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">Reviews</a>
+      {% endif %}
 
-    
-            {% if user.is_authenticated %}
-                {% if not in_wishlist %}
-                    <a href="{% url 'myapp:wishlist_add' dr.dish.id %}">
-                    <button type="submit">Add to Wishlist</button>
+    {% else %}
+      <div class="card-grid">
+        {% for dr in combos %}
+          <div class="card combo-card">
+            <div class="card-body">
+              <h3>{{ dr.dish.name }}</h3>
+              <p class="subtitle">
+                At
+                <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">
+                  {{ dr.restaurant.name }}
+                </a>
+              </p>
+              <div class="card-actions">
+                <a
+                  href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}"
+                  class="btn-view"
+                >
+                  Reviews
+                </a>
+                {% if user.is_authenticated %}
+                  {% if not in_wishlist %}
+                    <a
+                      href="{% url 'myapp:wishlist_add' dr.dish.id %}"
+                      class="btn-wish"
+                    >
+                      Add to Wishlist
                     </a>
-                    {% else %}
-                    <form action="{% url 'myapp:wishlist_remove' wishlist_item_id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Remove from Wishlist</button>
+                  {% else %}
+                    <form
+                      action="{% url 'myapp:wishlist_remove' wishlist_item_id %}"
+                      method="post"
+                      class="inline-form"
+                    >
+                      {% csrf_token %}
+                      <button type="submit" class="btn-wish remove">
+                        Remove from Wishlist
+                      </button>
                     </form>
+                  {% endif %}
+                {% else %}
+                  <p>
+                    <a href="{% url 'login' %}">Log in</a> to add this dish to your wishlist.
+                  </p>
                 {% endif %}
-            {% else %}
-                <p><a href="{% url 'login' %}">Log in</a> to add this dish to your wishlist.</p>
-            {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
     {% endif %}
+  </div>
 {% endblock %}

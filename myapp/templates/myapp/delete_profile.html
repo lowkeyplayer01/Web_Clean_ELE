@@ -1,11 +1,18 @@
+<!-- delete_profile.html -->
 {% extends "myapp/base.html" %}
+{% block title %}Delete Account{% endblock %}
 {% block content %}
-  <h1>Delete Account</h1>
-  <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, Delete My Account</button>
-    
-    <a href="{% url 'myapp:profile' %}">Cancel</a>
-  </form>
+<div class="auth-page">
+  <div class="content-wrapper">
+    <h1>Delete Account</h1>
+    <p>Are you sure you want to delete your account <strong>{{ request.user.username }}</strong>?</p>
+    <form method="post" class="simple-form">
+      {% csrf_token %}
+      <div class="form-actions">
+        <button type="submit" class="btn">Yes, delete my account</button>
+        <a href="{% url 'myapp:profile' %}" class="btn-link">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

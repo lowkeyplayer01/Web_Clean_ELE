@@ -1,19 +1,25 @@
 {% extends "myapp/base.html" %}
-{% block title %}
-    Submit Feedback
-{% endblock %}
+{% block title %}Site Feedback{% endblock %}
+
 {% block content %}
-  <h1>Site Feedback</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div>
-      {{ form.suggestions.label_tag }}<br>
-      {{ form.suggestions }}
-      {% for err in form.suggestions.errors %}
-        <div style="color:red">{{ err }}</div>
-      {% endfor %}
-    </div>
-    <button type="submit">Send Feedback</button>
-  </form>
+<div class="feedback-page">
+  <div class="content-wrapper">
+    <h1>Site Feedback</h1>
+    <form method="post" class="simple-form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="form-group">
+        {{ form.suggestions.label_tag }}
+        {{ form.suggestions }}
+        {% for err in form.suggestions.errors %}
+          <div class="form-errors">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn">Send Feedback</button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
+

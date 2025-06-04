@@ -1,30 +1,37 @@
 {% extends "myapp/base.html" %}
-{% block title %}
-    {{ restaurant.name }}
-{% endblock %}
-{% block content %}
-  <h1>{{ restaurant.name }}</h1>
-  <p>{{ restaurant.description }}</p>
-  <p>Address: {{ restaurant.address }}</p>
-  <p>Phone: {{ restaurant.contact_phone }}</p>
-  <p>Website: 
-    {% if restaurant.website %}
-      <a href="{{ restaurant.website }}">{{ restaurant.website }}</a>
-    {% else %}
-      N/A
-    {% endif %}
-  </p>
+{% block title %}{{ restaurant.name }}{% endblock %}
 
-  <h2>Menu</h2>
-  <ul>
-    {% for dr in dishes %}
-      <li>
-        {{ dr.dish.name }}  
-        ({{ dr.local_name|default:dr.dish.name }})  
-        — <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">Reviews</a>
-      </li>
-    {% empty %}
-      <li>No dishes available.</li>
-    {% endfor %}
-  </ul>
+{% block content %}
+<div class="detail-page">
+  <div class="content-wrapper">
+    <h1>{{ restaurant.name }}</h1>
+    <p>{{ restaurant.description }}</p>
+    <p><strong>Address:</strong> {{ restaurant.address }}</p>
+    <p><strong>Phone:</strong> {{ restaurant.contact_phone }}</p>
+    <p>
+      <strong>Website:</strong>
+      {% if restaurant.website %}
+        <a href="{{ restaurant.website }}" target="_blank" class="link-button">
+          {{ restaurant.website }}
+        </a>
+      {% else %}
+        N/A
+      {% endif %}
+    </p>
+
+    <h2>Menu</h2>
+    <ul class="simple-list">
+      {% for dr in dishes %}
+        <li>
+          {{ dr.dish.name }} ({{ dr.local_name|default:dr.dish.name }})
+          <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}" class="btn-view">
+            Reviews
+          </a>
+        </li>
+      {% empty %}
+        <li>No dishes available.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 {% endblock %}

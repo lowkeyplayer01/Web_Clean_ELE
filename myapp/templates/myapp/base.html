@@ -1,41 +1,53 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Foodish</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Foodish{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'myapp/css/base.css' %}">
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="{% url 'myapp:landing' %}">Home</a></li>
-      <li><a href="{% url 'myapp:profile' %}">Profile</a></li>
-      <li><a href="{% url 'myapp:suggest_dishrestaurant' %}">Suggest Dish</a></li>
-      <li><a href="{% url 'myapp:restaurant_list' %}">Restaurants</a></li>
-      {% if user.is_authenticated %}
-        <li>
-          <form method="post" action="{% url 'logout' %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit">Logout ({{ user.username }})</button>
-          </form>
-        </li>
-      {% else %}
-        <li><a href="{% url 'login' %}">Login</a></li>
-        <li><a href="{% url 'myapp:signup' %}">Sign Up</a></li>
-      {% endif %}
-    </ul>
+  <nav class="navbar">
+    <div class="container">
+      <a href="{% url 'myapp:landing' %}" class="brand">Foodish</a>
+      <ul class="nav-links">
+        <li><a href="{% url 'myapp:home' %}">Home</a></li>
+        <li><a href="{% url 'myapp:profile' %}">Profile</a></li>
+        <li><a href="{% url 'myapp:suggest_dishrestaurant' %}">Suggest Dish</a></li>
+        <li><a href="{% url 'myapp:restaurant_list' %}">Restaurants</a></li>
+        {% if user.is_authenticated %}
+          <li>
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="link-button">Logout ({{ user.username }})</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'login' %}">Login</a></li>
+          <li><a href="{% url 'myapp:signup' %}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </div>
   </nav>
+
   {% if messages %}
-  <div class="container mt-3">
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">
-        {{ message }}
-      </div>
-    {% endfor %}
-  </div>
+    <div class="container messages">
+      {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
   {% endif %}
-  <div>
-    {% block content %}
-    {% endblock %}
-  </div>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 Foodish. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>

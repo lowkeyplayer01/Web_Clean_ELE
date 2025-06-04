@@ -1,28 +1,74 @@
 {% extends "myapp/base.html" %}
-{% block title %}
-    Edit Your Review
-{% endblock %}
+{% block title %}Edit Your Review{% endblock %}
 
 {% block content %}
-  <h2>Edit Your Review</h2>
-  <h3>
-    {{ review.dish_restaurant.local_name|default:review.dish_restaurant.dish.name }}
-    @ {{ review.dish_restaurant.restaurant.name }}
-  </h3>
+<div class="container review-container">
+  <div class="review-header">
+    <h2>Edit Your Review</h2>
+    <h3>
+      {{ review.dish_restaurant.local_name|default:review.dish_restaurant.dish.name }}
+      @ {{ review.dish_restaurant.restaurant.name }}
+    </h3>
+  </div>
 
-  <form method="post" enctype="multipart/form-data">
-    {{ form.non_field_errors }}
-    {% csrf_token %}
-    {{ form.as_p }}
-    {% if review.photo %}
-    <div>
-      <p>Current Photo:</p>
-      <img src="{{ review.photo.url }}" alt="Current photo by {{ review.user.username }}"
-      style="max-width:300px; height:auto;">
-      <small>(Leave blank below to keep this image.)</small>
-    </div>
-    {% endif %}
-    <div><button type="submit">Save Changes</button></div>
-    <a href="{% url 'myapp:dish_reviews' review.dish_restaurant.dish.id review.dish_restaurant.restaurant.id %}">Cancel</a>
-  </form>
+  <div class="review-form">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="form-group">
+        {{ form.rating.label_tag }}
+        {{ form.rating }}
+        {% for err in form.rating.errors %}
+          <div class="form-errors">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.price_paid.label_tag }}
+        {{ form.price_paid }}
+        {% for err in form.price_paid.errors %}
+          <div class="form-errors">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      {% if review.photo %}
+        <div class="form-group">
+          <label>Current Photo</label>
+          <img
+            src="{{ review.photo.url }}"
+            alt="Photo by {{ review.user.username }}"
+            class="review-image"
+          >
+          <small>(Leave blank below to keep this image.)</small>
+        </div>
+      {% endif %}
+
+      <div class="form-group">
+        {{ form.photo.label_tag }}
+        {{ form.photo }}
+        {% for err in form.photo.errors %}
+          <div class="form-errors">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        {% for err in form.description.errors %}
+          <div class="form-errors">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <button type="submit" class="btn">Save Changes</button>
+      <a
+        href="{% url 'myapp:dish_reviews'
+                   review.dish_restaurant.dish.id
+                   review.dish_restaurant.restaurant.id %}"
+        class="btn-link">
+        Cancel
+      </a>
+    </form>
+  </div>
+</div>
 {% endblock %}

@@ -1,45 +1,61 @@
 {% extends "myapp/base.html" %}
+{% load static %}
 
-{% block content %}
-  <h1>Home</h1>
+{% block title %}Foodish Home{% endblock %}
 
-  <form method="get" action="{% url 'myapp:search_results' %}">
-    <label for="dish-search">Search for a dish:</label>
-    <input
-      type="text"
-      id="dish-search"
-      name="q"
-      placeholder="Enter dish name…"
-      required
-    >
-    <button type="submit">Search</button>
-  </form>
-  <hr>
-
-  <h2>Trending Dishes (by review count)</h2>
-  <ul>
-    {% for dr in trending %}
-      <li>
-        {{ dr.dish.name }} @ {{ dr.restaurant.name }}
-        [Reviews: {{ dr.review_count }}]
-        <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">Reviews</a>
-      </li>
-    {% empty %}
-      <li>No trending dishes yet.</li>
-    {% endfor %}
-  </ul>
-
-  <hr>
-  <h2>Browse All </h2>
-  <ul>
-    {% for dr in all_combos %}
-    <li>
-      <strong>{{  dr.dish.name }}</strong> – {{dr.restaurant.name }}
-      <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}">
-        Reviews
-      </a>
-    </li>
-  {% endfor %}
-</ul>
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'myapp/css/home_search.css' %}">
 {% endblock %}
 
+{% block content %}
+  <section class="search-hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h1>Find Your Dish</h1>
+      <form method="get" action="{% url 'myapp:search_results' %}" class="search-group">
+          <input type="text" name="q" required>
+          <button type="submit">Search</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+    <section class="trending-section">
+      <div class="container">
+      <h2>Trending Dishes</h2>
+      <div class="card-grid">
+        {% for dr in trending %}
+          <div class="card combo-card">
+            <div class="card-body">
+              <h3>{{ dr.dish.name }}</h3>
+              <p class="subtitle"><a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">{{ dr.restaurant.name }}</a></p>
+              <p class="meta">Reviews: {{ dr.review_count }}</p>
+              <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}" class="btn-view">Reviews</a>
+            </div>
+          </div>
+        {% empty %}
+          <p class="no-data">No trending dishes yet.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="all-section">
+    <div class="container">
+      <h2>Browse All</h2>
+      <div class="card-grid">
+        {% for dr in all_combos %}
+          <div class="card combo-card">
+            <div class="card-body">
+              <h3>{{ dr.dish.name }}</h3>
+              <p class="subtitle"><a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">{{ dr.restaurant.name }}</p></a>
+              <a href="{% url 'myapp:dish_reviews' dr.dish.id dr.restaurant.id %}" class="btn-view">Reviews</a>
+            </div>
+          </div>
+        {% endfor %}
+        {% if not all_combos %}
+        <p class="no-data">No dishes available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

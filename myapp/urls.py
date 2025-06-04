@@ -21,7 +21,6 @@ urlpatterns = [
     path('dishrestaurant/suggest/',views.suggest_dishrestaurant,name="suggest_dishrestaurant"),
 
     path('signup/', views.signup, name='signup'),
-
     path('wishlist/add/<int:dish_id>/', views.wishlist_add, name='wishlist_add'),
     path('wishlist/remove/<int:item_id>/', views.wishlist_remove, name='wishlist_remove'),
 

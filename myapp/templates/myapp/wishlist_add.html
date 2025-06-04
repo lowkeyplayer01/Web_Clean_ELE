@@ -1,27 +1,25 @@
 {% extends "myapp/base.html" %}
-{% block title %}
-Add “{{ dish.name }}” to Wishlist
-{% endblock %}
+{% block title %}Add “{{ dish.name }}” to Wishlist{% endblock %}
 
 {% block content %}
-  <h1>Add “{{ dish.name }}” to Your Wishlist</h1>
-
-  <form method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-
-    <div>
-      {{ form.comments.label_tag }}<br>
-      {{ form.comments }}
-      {% for err in form.comments.errors %}
-        <div class="error">{{ err }}</div>
-      {% endfor %}
-      <small>(Optional) Add some notes here :)</small>
-    </div>
-
-    <div>
-      <button type="submit">Add to Wishlist</button>
-      <a href="{% url 'myapp:profile' %}">Cancel</a>
-    </div>
-  </form>
+<div class="wishlist-page">
+  <div class="content-wrapper">
+    <h1>Add “{{ dish.name }}” to Your Wishlist</h1>
+    <form method="post" class="simple-form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="form-group">
+        {{ form.comments.label_tag }}
+        {{ form.comments }}
+        {% for err in form.comments.errors %}
+          <div class="form-errors">{{ err }}</div>
+        {% endfor %}
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn">Add to Wishlist</button>
+        <a href="{% url 'myapp:profile' %}" class="btn-link">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

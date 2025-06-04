@@ -1,24 +1,48 @@
 {% extends "myapp/base.html" %}
+{% load static %}
 
 {% block title %}
-    Suggest a New Dish–Restaurant Entry
+  Suggest a New Dish & Restaurant Entry
 {% endblock %}
 
 {% block content %}
-    <h2>Suggest a New Dish–Restaurant Entry</h2>
-    {% if form.non_field_errors %}
-      <div class="error">
-            {{ form.non_field_errors }}
-      </div>
-    {% endif %}
+  <div class="suggest-page">
+    <div class="container">
+      <h2>Suggest a New Dish & Restaurant Entry</h2>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div>
-            <button type="submit">Submit Suggestion</button>
-            <a href="{% url 'myapp:home' %}">Cancel</a>
+      {% if form.non_field_errors %}
+        <div class="form-errors" style="margin-bottom:1rem;">
+          {% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}
         </div>
-    </form>
-{% endblock %}
+      {% endif %}
 
+      <div class="suggest-form-wrapper">
+        <form method="post" class="suggest-form">
+          {% csrf_token %}
+          {% for field in form %}
+            {% if field.name == 'available' %}
+              <div class="form-group checkbox-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+              </div>
+            {% else %}
+              <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                  <div class="form-errors">
+                    {% for err in field.errors %}{{ err }}<br>{% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+          <div class="form-actions">
+            <button type="submit" class="btn">Submit Suggestion</button>
+            <a href="{% url 'myapp:home' %}" class="btn-link">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
