@@ -30,8 +30,6 @@ class Dish(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True,validators=[MaxLengthValidator(1000, "Description cannot exceed 1000 characters."),
                                                           MinLengthValidator(5,"At least 5 characters.")])
-    categories = models.ManyToManyField(Category, blank=True)
-
     class Meta:
         ordering = ["name"]
 
