@@ -1,6 +1,9 @@
 {% extends "myapp/base.html" %}
 {% load static %}
-
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/landing.css' %}"/>
+{% endblock %}
 {% block title %}Foodish — Welcome{% endblock %}
 
 

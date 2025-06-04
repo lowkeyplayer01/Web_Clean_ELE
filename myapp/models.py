@@ -30,6 +30,8 @@ class Dish(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True,validators=[MaxLengthValidator(1000, "Description cannot exceed 1000 characters."),
                                                           MinLengthValidator(5,"At least 5 characters.")])
+    categories = models.ManyToManyField(Category, blank=True)
+    
     class Meta:
         ordering = ["name"]
 
@@ -51,6 +53,7 @@ class DishRestaurant(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT)
     dish = models.ForeignKey(Dish,       on_delete=models.PROTECT)
     local_name = models.CharField(max_length=100,blank=True)
+    categories = models.ManyToManyField(Category, blank=True)
 
     class Meta:
         constraints = [models.UniqueConstraint(
@@ -91,6 +94,13 @@ class Review(models.Model):
     dish_restaurant = models.ForeignKey(
         DishRestaurant, on_delete=models.CASCADE, related_name='reviews'
     )
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "dish_restaurant"],
+                name="unique_review_per_user_and_dishrest",
+            )
+        ]
 
     def __str__(self):
         return f"{self.user.username}'s review of {self.dish_restaurant}"

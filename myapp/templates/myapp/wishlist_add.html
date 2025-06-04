@@ -1,5 +1,9 @@
 {% extends "myapp/base.html" %}
-{% block title %}Add “{{ dish.name }}” to Wishlist{% endblock %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/wishlist_add.css' %}"/>
+{% block title %}Add “{{ dish.name }}” to Wishlist{% endblock %}{% endblock %}
 
 {% block content %}
 <div class="wishlist-page">

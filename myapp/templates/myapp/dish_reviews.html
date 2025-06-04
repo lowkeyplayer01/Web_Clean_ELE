@@ -1,15 +1,21 @@
 {% extends "myapp/base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/reviews_suggestion.css' %}"/>
+{% endblock %}
 {% block title %}Reviews — {{ dr.local_name|default:dr.dish.name }}{% endblock %}
-{% block extra_css %}{% endblock %}
+
 
 {% block content %}
 <div class="container review-container">
-  <!-- 顶部标题与平均评分（加星号）以及 Add to Wishlist 按钮 -->
   <div class="review-header with-wishlist">
     <div class="title-section">
       <h1>
         {{ dr.local_name|default:dr.dish.name }}
+        <a href="{% url 'myapp:restaurant_detail' dr.restaurant.id %}">
         @ {{ dr.restaurant.name }}
+        </a>
       </h1>
       <p class="average-rating">
         {% if avg_rating %}
@@ -24,12 +30,12 @@
       <div class="wishlist-btn-wrap">
         {% if not in_wishlist %}
           <a href="{% url 'myapp:wishlist_add' dr.dish.id %}">
-            <button class="btn">Add to Wishlist</button>
+            <button class="btn-link">Add to Wishlist</button>
           </a>
         {% else %}
           <form action="{% url 'myapp:wishlist_remove' wishlist_item_id %}" method="post">
             {% csrf_token %}
-            <button class="btn" type="submit">Remove from Wishlist</button>
+            <button class="btn-link" type="submit">Remove from Wishlist</button>
           </form>
         {% endif %}
       </div>
@@ -67,7 +73,15 @@
       <h2 class="section-title">Submit a Review</h2>
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.non_field_errors }}
+
+        {% if form.non_field_errors %}
+        <div class="form-errors">
+          {% for err in form.non_field_errors %}
+          {{ err }}
+          {% endfor %}
+        </div>
+        {% endif %}
+
 
         <div class="form-group">
           {{ form.rating.label_tag }}
@@ -85,7 +99,6 @@
           {% endfor %}
         </div>
 
-        <!-- Photo Upload -->
         <div class="form-group">
           {{ form.photo.label_tag }}
           {{ form.photo }}

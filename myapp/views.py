@@ -56,7 +56,7 @@ def search_results(request):
     if category_id:
         try:
             category = Category.objects.get(id=category_id)
-            combos = combos.filter(dish__categories=category)
+            combos = combos.filter(categories=category)
             selected_category = category
         except Category.DoesNotExist:
             selected_category = None
@@ -98,7 +98,7 @@ def dish_reviews(request, dish_id, rest_id):
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect("login")
-        form = ReviewForm(request.POST, request.FILES)
+        form = ReviewForm(request.user, dr, request.POST, request.FILES)
         if form.is_valid():
             rev = form.save(commit=False)
             rev.user = request.user
@@ -107,7 +107,10 @@ def dish_reviews(request, dish_id, rest_id):
             messages.success(request, "Your review was submitted successfully!")
             return redirect("myapp:dish_reviews", dish_id=dish_id, rest_id=rest_id)
     else:
-        form = ReviewForm()
+        if request.user.is_authenticated:
+            form = ReviewForm(request.user, dr)
+        else:
+            form = None
 
     return render(request, "myapp/dish_reviews.html", {
         "dr": dr,
@@ -124,14 +127,15 @@ def review_edit(request, pk):
     rev = get_object_or_404(Review, pk=pk)
     if rev.user != request.user:
         raise Http404
+    dr = rev.dish_restaurant
     if request.method == "POST":
-        form = ReviewForm(request.POST, request.FILES, instance=rev)
+        form = ReviewForm(request.user,dr,request.POST,request.FILES, instance=rev)
         if form.is_valid():
             form.save()
             messages.success(request, "Your review was edited successfully!")
             return redirect("myapp:profile")
     else:
-        form = ReviewForm(instance=rev)
+        form = ReviewForm(request.user, dr, instance=rev)
 
     return render(request, "myapp/review_edit.html", {
         "form": form,

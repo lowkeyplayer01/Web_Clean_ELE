@@ -1,4 +1,8 @@
 {% extends "myapp/base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/auth_page.css' %}"/>{% endblock %}
 {% block title %}Log In{% endblock %}
 {% block content %}
 <div class="auth-page">

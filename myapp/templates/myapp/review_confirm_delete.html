@@ -1,4 +1,8 @@
 {% extends "myapp/base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/reviews_suggestion.css' %}"/>{% endblock %}
 {% block title %}Delete Review{% endblock %}
 
 {% block content %}
@@ -16,7 +20,7 @@
       <form method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Yes, delete it</button>
-        <a href="{% url 'myapp:dish_reviews' review.dish_restaurant.id %}" class="btn-link">Cancel</a>
+        <a href="{% url 'myapp:dish_reviews' review.dish_restaurant.dish.id review.dish_restaurant.id %}" class="btn-link">Cancel</a>
       </form>
     </div>
   </div>

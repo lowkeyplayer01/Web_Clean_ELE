@@ -1,4 +1,9 @@
 {% extends "myapp/base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/profile.css' %}"/>
+{% endblock %}
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
@@ -13,7 +18,7 @@
       <p>First Name: {{ user.first_name }}</p>
       <p>Last Name: {{ user.last_name }}</p>
       <p>
-        <a href="{% url 'password_change' %}">Change Password</a>
+        <a href="{% url 'myapp:change_password' %}">Change Password</a>
         |
         <a href="{% url 'myapp:delete_profile' %}">Delete Account</a>
       </p>
@@ -21,45 +26,59 @@
 
     <div class="section">
       <h2>My Wishlist</h2>
-      {% if wishlist_items %}
-        {% for item in wishlist_items %}
-        <div class="wishlist-item">
-          <p>{{ item.dish.name }} @ {{ item.dish_restaurant.restaurant.name }}</p>
-          <p>Added on {{ item.created_date|date:"M d, Y H:i" }}</p>
-          {% if item.notes %}
-          <p><em>Note: {{ item.notes }}</em></p>
-          {% endif %}
-          <p>
-            <a href="{% url 'myapp:wishlist_remove' item.id %}">
-              Remove
-            </a>
-          </p>
-        </div>
+      {% if paired_wishlist %}
+        {% for item, combo in paired_wishlist %}
+          <div class="wishlist-item">
+            <p>
+              <strong>{{ item.dish.name }}</strong>
+            </p>
+            <p>Added on {{ item.created_date|date:"M d, Y H:i" }}</p>
+            {% if item.comments %}
+              <p class="review-text"><em>Note: {{ item.comments }}</em></p>
+            {% endif %}
+            <p>
+              <a class="link-highlight" href="{% url 'myapp:wishlist_remove' item.id %}">
+                Remove
+              </a>
+            </p>
+          </div>
         {% endfor %}
       {% else %}
         <p>No items in wishlist.</p>
       {% endif %}
       <p>
-        <a href="{% url 'myapp:home' %}" class="link-highlight">Search to add more dishes</a>
+        <a class="link-highlight" href="{% url 'myapp:home' %}">
+          Search to add more dishes
+        </a>
       </p>
     </div>
 
 
+
     <div class="section">
       <h2>My Reviews</h2>
-      {% if reviews %}
-        {% for r in reviews %}
+      {% if my_reviews %}
+        {% for r in my_reviews %}
         <div class="review-item">
           <p>
-            {{ r.dish_restaurant.restaurant.name }}
+            <strong>{{ r.dish_restaurant.restaurant.name }}
             &ndash;
-            {{ r.dish_restaurant.dish.name }}
+            {{ r.dish_restaurant.dish.name }}</strong>
           </p>
           <p>
             Rated ★ {{ r.rating }}
             on {{ r.created_date|date:"M d, Y H:i" }}
           </p>
-          <p>{{ r.description }}</p>
+          <p class="review-text">{{ r.description }}</p>
+          {% if r.photo %}
+              <div class="review-photo">
+                <img
+                  src="{{ r.photo.url }}"
+                  alt="Photo by {{ r.user.username }}"
+                  class="review-photo-img"
+                >
+              </div>
+            {% endif %}
           <p>
             <a href="{% url 'myapp:review_edit' r.id %}">Edit</a>
             <a href="{% url 'myapp:review_delete' r.id %}">Delete</a>

@@ -1,0 +1,249 @@
+.search-hero {
+    position: relative;
+    height: 50vh;
+    background: url('../images/home.jpg') center/cover no-repeat;
+  }
+  
+.search-hero .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+  
+.search-hero .hero-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
+}
+  
+.search-hero h1 {
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+    color: #333;
+    font-weight: 600;
+}
+  
+.search-hero .search-group {
+    display: inline-flex;
+    border: 2px solid #dcca87;
+    border-radius: 50px;
+    overflow: hidden;
+    max-width: 500px;
+    width: 100%;
+}
+  
+.search-hero .search-group input {
+    flex: 1;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+}
+.search-hero .search-group input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 202, 135, 0.5);
+}
+  
+.search-hero .search-group button {
+    background-color: #dcca87;
+    border: none;
+    padding: 0 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.search-hero .search-group button:hover {
+    background-color: #bbad6c;
+    color: #fff;
+    transform: translateY(-2px);
+}
+  
+  
+  
+.trending-section h2,
+.all-section h2 {
+    font-size: 1.75rem;
+    margin: 2rem 0 1rem;
+    border-bottom: 2px solid #dcca87;
+    display: inline-block;
+    padding-bottom: 0.25rem;
+    color: #333;
+    font-weight: 500;
+}
+  
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+  
+.combo-card .card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+  
+.combo-card .card-body h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+  
+.combo-card .subtitle {
+    color: #555;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+  
+.combo-card .meta {
+    font-size: 0.875rem;
+    color: #777;
+    margin-bottom: 1rem;
+}
+  
+.combo-card .btn-view,
+.combo-card .btn-wish {
+    margin-top: auto;
+    display: inline-block;
+    background-color: #dcca87;
+    color: #333;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    transition: background-color 0.2s, transform 0.2s;
+    font-size: 0.9rem;
+}
+.combo-card .btn-view:hover,
+.combo-card .btn-wish:hover {
+    background-color: #bbad6c;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+  
+.combo-card .btn-wish.remove {
+    background-color: #e57373;
+    margin-top: 0.5rem;
+}
+.combo-card .btn-wish.remove:hover {
+    background-color: #c62828;
+  }
+  
+.no-data {
+    text-align: center;
+    color: #666;
+    margin: 2rem 0;
+    font-size: 1rem;
+}
+  
+  
+.filter-form {
+    display: flex;
+    align-items: center;    
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+  
+  
+.filter-form .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+  
+.filter-form label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #555;
+}
+  
+.filter-form select {
+    padding: 0.4rem 0.6rem;
+    border: 2px solid #dcca87;
+    border-radius: 4px;
+}
+  
+.filter-form .btn-filter {
+    background-color: #dcca87;
+    color: #333;
+    border: none;
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.filter-form .btn-filter:hover {
+    background-color: #bbad6c;
+    color: #fff;
+    transform: translateY(-2px);
+}
+  
+.filter-form .link-clear {
+    font-size: 0.9rem;
+    color: #dcca87;
+    text-decoration: underline;
+    padding-bottom: 0;
+    align-self: center;
+}
+.filter-form .link-clear:hover {
+    color: #bbad6c;
+}
+  
+.filter-form .form-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+  
+@media (max-width: 768px) {
+    .filter-form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .filter-form .btn-filter {
+      width: 100%;
+      text-align: center;
+    }
+    .filter-form .link-clear {
+      text-align: center;
+      display: block;
+      margin-top: 0.5rem;
+    }
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+}
+
+
+.hint-text {
+    margin-top: 1rem;
+    color: #555;
+    font-size: 0.95rem;
+    text-align: center;
+}
+  
+
+.hint-link {
+    display: inline-block;
+    color: #333;
+    background-color: #fff4cf;
+    border-radius: 4px;
+    padding: 0.1rem 0.3rem;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+  
+.hint-link:hover {
+    background-color: #ffe58f;
+}

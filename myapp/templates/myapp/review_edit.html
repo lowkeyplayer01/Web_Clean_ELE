@@ -1,4 +1,8 @@
 {% extends "myapp/base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/reviews_suggestion.css' %}"/>{% endblock %}
 {% block title %}Edit Your Review{% endblock %}
 
 {% block content %}
@@ -6,8 +10,12 @@
   <div class="review-header">
     <h2>Edit Your Review</h2>
     <h3>
+      <a href="{% url 'myapp:dish_reviews' review.dish_restaurant.dish.id review.dish_restaurant.restaurant.id %}">
       {{ review.dish_restaurant.local_name|default:review.dish_restaurant.dish.name }}
+      </a>
+      <a href="{% url 'myapp:restaurant_detail' review.dish_restaurant.restaurant.id %}">
       @ {{ review.dish_restaurant.restaurant.name }}
+      </a>
     </h3>
   </div>
 
@@ -40,7 +48,6 @@
             alt="Photo by {{ review.user.username }}"
             class="review-image"
           >
-          <small>(Leave blank below to keep this image.)</small>
         </div>
       {% endif %}
 
@@ -59,14 +66,11 @@
           <div class="form-errors">{{ err }}</div>
         {% endfor %}
       </div>
-
+      
       <button type="submit" class="btn">Save Changes</button>
-      <a
-        href="{% url 'myapp:dish_reviews'
-                   review.dish_restaurant.dish.id
-                   review.dish_restaurant.restaurant.id %}"
+      <a href="{% url 'myapp:dish_reviews' review.dish_restaurant.dish.id review.dish_restaurant.restaurant.id %}"
         class="btn-link">
-        Cancel
+             Cancel
       </a>
     </form>
   </div>

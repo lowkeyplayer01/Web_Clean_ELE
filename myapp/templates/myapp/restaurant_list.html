@@ -1,4 +1,8 @@
 {% extends "myapp/base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/restaurant_list.css' %}"/>{% endblock %}
 {% block title %}All Restaurants{% endblock %}
 
 {% block content %}

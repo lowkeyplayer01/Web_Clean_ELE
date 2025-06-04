@@ -1,5 +1,10 @@
 <!-- delete_profile.html -->
 {% extends "myapp/base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/auth_page.css' %}"/>
+{% endblock %}
 {% block title %}Delete Account{% endblock %}
 {% block content %}
 <div class="auth-page">

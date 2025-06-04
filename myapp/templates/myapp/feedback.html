@@ -1,4 +1,8 @@
 {% extends "myapp/base.html" %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet"
+    href="{% static 'myapp/css/feedback.css' %}"/>{% endblock %}
 {% block title %}Site Feedback{% endblock %}
 
 {% block content %}
@@ -9,7 +13,6 @@
       {% csrf_token %}
       {{ form.non_field_errors }}
       <div class="form-group">
-        {{ form.suggestions.label_tag }}
         {{ form.suggestions }}
         {% for err in form.suggestions.errors %}
           <div class="form-errors">{{ err }}</div>

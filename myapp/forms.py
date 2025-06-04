@@ -12,7 +12,7 @@ class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ['suggestions']
-        widgets = {'suggestions': forms.Textarea(attrs={'rows': 5,'maxlength':1000,"minlength": 20,'required':True,'placeholder': 'Write your feedback…',}),
+        widgets = {'suggestions': forms.Textarea(attrs={'rows': 5,'maxlength':1000,"minlength": 20,'required':True,'placeholder': 'Share any insights for this web?'}),
         }
 
 
@@ -40,13 +40,23 @@ class ReviewForm(forms.ModelForm):
             'price_paid': 'Price Paid',
             'description': 'Review',
             'photo': 'Photo (optional)'}
+          
+    def __init__(self, user, dish_restaurant, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.dish_restaurant = dish_restaurant
 
-        labels = {
-            'rating': 'Rating',
-            'price_paid': 'Price Paid',
-            'description': 'Review',
-            'photo': 'Photo (optional)'}
-
+    def clean(self):
+        super().clean()
+        exists = (Review.objects.filter(user=self.user, dish_restaurant=self.dish_restaurant).exclude(pk=self.instance.pk)
+            .exists()
+        )
+        if exists:
+            raise ValidationError(
+                "You have already submitted a review for this dish."
+            )
+        return self.cleaned_data
+    
     def clean_description(self):
         text = self.cleaned_data['description'].strip()
         if not text:

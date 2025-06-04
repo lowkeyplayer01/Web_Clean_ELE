@@ -1,0 +1,92 @@
+.detail-page {
+    position: relative;
+    min-height: 100vh;
+    background: url('../images/list.jpg') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .detail-page::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.6);
+    z-index: 1;
+  }
+  .detail-page .content-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 800px;
+    background-color: rgba(255,255,255,0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 2rem 1.5rem;
+    box-sizing: border-box;
+  }
+  .detail-page h1 {
+    font-size: 2rem;
+    color: #222;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #dcca87;
+    display: inline-block;
+    padding-bottom: 0.25rem;
+  }
+  .detail-page p {
+    color: #444;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+  .detail-page .link-button {
+    font-size: 1rem;
+    color: #dcca87;
+    text-decoration: none;
+    border: none;
+    background: none;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .detail-page .link-button:hover {
+    color: #bbad6c;
+  }
+  .detail-page h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+    border-bottom: 2px solid #dcca87;
+    display: inline-block;
+    padding-bottom: 0.25rem;
+  }
+  .detail-page .simple-list {
+    list-style: none;
+    padding: 0;
+  }
+  .detail-page .simple-list li {
+    font-size: 1.05rem;
+    color: #333;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  .detail-page .simple-list li:last-child {
+    border-bottom: none;
+  }
+  .detail-page .btn-view {
+    display: inline-block;
+    margin-left: 0.5rem;
+    background-color: #dcca87;
+    color: #333;
+    border-radius: 50px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  .detail-page .btn-view:hover {
+    background-color: #bbad6c;
+    color: #fff;
+    transform: translateY(-2px);
+  }
